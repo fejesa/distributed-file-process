@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * RESTful API resource for managing media files.
+ *
+ * <p>This class provides endpoints for interacting with media files, including creating new media files.
+ */
 @Path("/api")
 public class MediaFileResource {
 
@@ -23,6 +28,15 @@ public class MediaFileResource {
         this.pendingMediaFiles = pendingMediaFiles;
     }
 
+    /**
+     * Handles HTTP POST requests for creating a new media file.
+     *
+     * <p>This endpoint accepts a JSON payload representing the media file metadata, validates it,
+     * and delegates the creation process to the {@code PendingMediaFiles} service.
+     *
+     * @param createMediaFile the media file metadata provided in the request body.
+     * @return a {@code RestResponse} with HTTP status 201 (Created) if the operation is successful.
+     */
     @POST
     @Path("/file")
     @Produces(MediaType.APPLICATION_JSON)
