@@ -24,19 +24,19 @@ public class VirusScannerService {
 
     /**
      * Checks pending files waiting for virus scanning and schedules them for scanning.
-     * This method logs each file being scheduled and simulates a delay for the scanning process.
+     * This method simulates a delay for the scanning process.
      */
     public void checkAwaiting() {
         pendingMediaFiles.getAwaitingVirusScanning()
-                .forEach(name -> {
-                    logger.info("Schedule media file [{}] virus scanning", name);
-                    try {
-                        Thread.sleep(3000); // Simulates a delay of 3 second to mimic the scanning process
-                        pendingMediaFiles.virusScanningCompleted(new VirusScanResult(name, false));
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException(e);
-                    }
-                });
+            .forEach(name -> {
+                logger.info("Schedule media file [{}] virus scanning", name);
+                try {
+                    Thread.sleep(3000); // Simulates a delay of 3 second to mimic the scanning process
+                    pendingMediaFiles.virusScanningCompleted(new VirusScanResult(name, false));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            });
     }
 }

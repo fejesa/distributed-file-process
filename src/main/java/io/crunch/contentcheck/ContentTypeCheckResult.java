@@ -1,4 +1,4 @@
-package io.crunch.media;
+package io.crunch.contentcheck;
 
 /**
  * Represents the result of a content type check.

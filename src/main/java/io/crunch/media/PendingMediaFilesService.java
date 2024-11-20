@@ -1,6 +1,7 @@
 package io.crunch.media;
 
 import io.crunch.cache.PendingFileStatusCache;
+import io.crunch.contentcheck.ContentTypeCheckResult;
 import io.crunch.security.VirusScanResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
