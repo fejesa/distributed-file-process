@@ -21,7 +21,7 @@ public interface PendingFileStatusCache {
      *
      * @param name the name of the pending file to delete.
      */
-    void delete(long name);
+    void delete(String name);
 
     /**
      * Retrieves a stream of pending file names that match the specified status.

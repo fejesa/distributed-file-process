@@ -32,6 +32,7 @@ public class VirusScannerService {
                     logger.info("Schedule media file [{}] virus scanning", name);
                     try {
                         Thread.sleep(3000); // Simulates a delay of 3 second to mimic the scanning process
+                        pendingMediaFiles.virusScanningCompleted(new VirusScanResult(name, false));
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         throw new RuntimeException(e);

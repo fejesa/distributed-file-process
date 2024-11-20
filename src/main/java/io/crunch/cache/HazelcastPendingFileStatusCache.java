@@ -47,7 +47,7 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
     }
 
     @Override
-    public void delete(long name) {
+    public void delete(String name) {
         getStatusCache().delete(name);
     }
 
