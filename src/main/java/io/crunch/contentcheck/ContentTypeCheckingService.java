@@ -10,6 +10,8 @@ import java.lang.invoke.MethodHandles;
 /**
  * Service responsible for handling content type checking of pending media files.
  * This service interacts with the {@link PendingMediaFiles} interface to process files awaiting type validation.
+ * <p><b>Usage Notes:</b>
+ * This class is a placeholder for the actual content type checking implementation and does not perform any real validation.
  */
 @ApplicationScoped
 public class ContentTypeCheckingService {

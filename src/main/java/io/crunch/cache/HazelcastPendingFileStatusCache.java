@@ -12,7 +12,10 @@ import java.util.stream.Stream;
 
 /**
  * Implementation of {@link PendingFileStatusCache} using Hazelcast for distributed caching of pending file statuses.
- * This class leverages Hazelcast's in-memory data grid to store and manage file statuses efficiently.
+ *
+ * <p>This class utilizes Hazelcast's in-memory data grid to efficiently store and manage the statuses of pending files.
+ * For a stateless caching solution, consider storing the data in an external database.
+ * However, in this implementation, the items are stored in memory for simplicity.
  */
 @ApplicationScoped
 public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
@@ -56,7 +59,7 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
     }
 
     @Override
-    public Stream<String> getAwaiting(String status) {
+    public Stream<String> getByStatus(String status) {
         return getFilesNames(entry -> entry.status().equals(status));
     }
 
@@ -71,10 +74,22 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
     }
 
     /**
-     * Filters and retrieves file names from the cache based on a given predicate.
+     * Filters and retrieves file names from the Hazelcast cache based on a specified condition,
+     * processing only the entries locally owned by the current member.
      *
-     * @param predicate the condition to filter file entries.
-     * @return a stream of file names that satisfy the given predicate.
+     * <p>This method utilizes Hazelcast's {@code localKeySet()} to access keys for entries
+     * that the current Hazelcast member is the primary owner of. In a Hazelcast cluster,
+     * each entry has a single primary owner, regardless of the number of replicas.
+     * This ensures that the method operates exclusively on the member's locally owned data,
+     * ignoring backup replicas or data owned by other members.
+     *
+     * <p>File names (keys) are mapped into {@link Entry} objects along with their associated
+     * statuses (values), allowing the provided {@code predicate} to filter entries based on
+     * both the key and value.
+     *
+     * @param predicate the condition to filter file entries, evaluated against the {@link Entry} objects.
+     * @return a stream of file names (keys) that satisfy the given predicate.
+     * @see com.hazelcast.map.IMap#localKeySet()
      */
     private Stream<String> getFilesNames(Predicate<Entry> predicate) {
         var cache = getStatusCache();
@@ -99,5 +114,5 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
      * @param name   the name of the file.
      * @param status the status of the file.
      */
-    record Entry(String name, String status) {}
+    private record Entry(String name, String status) {}
 }

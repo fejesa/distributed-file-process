@@ -6,6 +6,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * Service responsible for handling media file transfer operations for pending media files.
+ * This service interacts with the {@link PendingMediaFiles} interface to process files awaiting transfer.
+ * <p><b>Usage Notes:</b>
+ * This class is a placeholder for the actual media file transfer implementation and does not perform any real transfer.
+ */
 @ApplicationScoped
 public class MediaFileTransferService {
 

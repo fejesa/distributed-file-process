@@ -10,6 +10,8 @@ import java.lang.invoke.MethodHandles;
 /**
  * Service responsible for handling virus scanning operations for pending media files.
  * This service interacts with the {@link PendingMediaFiles} interface to process files awaiting virus scanning.
+ * <p><b>Usage Notes:</b>
+ * This class is a placeholder for the actual virus scanning implementation and does not perform any real scanning.
  */
 @ApplicationScoped
 public class VirusScannerService {

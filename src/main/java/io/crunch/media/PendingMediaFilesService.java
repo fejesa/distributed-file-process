@@ -29,17 +29,17 @@ public class PendingMediaFilesService implements PendingMediaFiles {
 
     @Override
     public Stream<String> getAwaitingVirusScanning() {
-        return pendingFileStatusCache.getAwaiting("PENDING_VIRUS_SCAN");
+        return pendingFileStatusCache.getByStatus("PENDING_VIRUS_SCAN");
     }
 
     @Override
     public Stream<String> getAwaitingTypeChecking() {
-        return pendingFileStatusCache.getAwaiting("PENDING_TYPE_CHECK");
+        return pendingFileStatusCache.getByStatus("PENDING_TYPE_CHECK");
     }
 
     @Override
     public Stream<String> getAwaitingTransferring() {
-        return pendingFileStatusCache.getAwaiting("PENDING_TRANSFER");
+        return pendingFileStatusCache.getByStatus("PENDING_TRANSFER");
     }
 
     @Override
