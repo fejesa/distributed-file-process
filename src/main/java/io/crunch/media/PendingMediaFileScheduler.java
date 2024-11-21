@@ -8,6 +8,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.concurrent.TimeUnit;
 
+import static io.quarkus.scheduler.Scheduled.ConcurrentExecution.SKIP;
+
 /**
  * Scheduler for processing pending media files through various stages such as virus scanning,
  * content type checking, and file transferring.
@@ -36,7 +38,7 @@ public class PendingMediaFileScheduler {
     /**
      * Scheduled task to check and process media files awaiting virus scanning.
      */
-    @Scheduled(every = "{app.virus.scan.scheduler.period:5s}", delay = 14, delayUnit = TimeUnit.SECONDS)
+    @Scheduled(every = "{app.virus.scan.scheduler.period:5s}", delay = 1, delayUnit = TimeUnit.SECONDS, concurrentExecution = SKIP)
     public void checkWaitingVirusScanning() {
         execute(virusScannerService::checkAwaiting);
     }
@@ -44,7 +46,7 @@ public class PendingMediaFileScheduler {
     /**
      * Scheduled task to check and process media files awaiting content type checking.
      */
-    @Scheduled(every = "{app.content.type.checker.scheduler.period:5s}", delay = 12, delayUnit = TimeUnit.SECONDS)
+    @Scheduled(every = "{app.content.type.checker.scheduler.period:5s}", delay = 2, delayUnit = TimeUnit.SECONDS, concurrentExecution = SKIP)
     public void checkAwaitingTypeChecking() {
         execute(contentTypeCheckingService::checkAwaiting);
     }
@@ -52,7 +54,7 @@ public class PendingMediaFileScheduler {
     /**
      * Scheduled task to check and process media files awaiting transfer to final storage.
      */
-    @Scheduled(every = "{app.file.transfer.scheduler.period:5s}", delay = 5, delayUnit = TimeUnit.SECONDS)
+    @Scheduled(every = "{app.file.transfer.scheduler.period:5s}", delay = 3, delayUnit = TimeUnit.SECONDS, concurrentExecution = SKIP)
     public void checkAwaitingTransferring() {
         execute(mediaFileTransferService::checkAwaiting);
     }
