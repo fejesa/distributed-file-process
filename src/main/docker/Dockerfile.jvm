@@ -1,0 +1,29 @@
+####
+# This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
+###
+FROM registry.access.redhat.com/ubi9/openjdk-21-runtime:1.20
+
+EXPOSE 8080
+
+USER 185
+# Set Hazelcast JVM properties
+ENV JAVA_OPTS="-Xms500M -Xmx1G \
+ -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
+ -Djava.net.preferIPv4Stack=true \
+ -Dhazelcast.security.recommendations \
+ --add-modules java.se \
+ --add-exports java.base/jdk.internal.ref=ALL-UNNAMED \
+ --add-opens java.base/java.lang=ALL-UNNAMED \
+ --add-opens java.base/sun.nio.ch=ALL-UNNAMED \
+ --add-opens java.management/sun.management=ALL-UNNAMED \
+ --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+
+# We make four distinct layers so if there are application changes the library layers can be re-used
+COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=185 target/quarkus-app/*.jar /deployments/
+COPY --chown=185 target/quarkus-app/app/ /deployments/app/
+COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+
+ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
