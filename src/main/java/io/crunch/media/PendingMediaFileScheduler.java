@@ -1,6 +1,6 @@
 package io.crunch.media;
 
-import io.crunch.cache.PendingFileStatusCache;
+import io.crunch.cache.FileStatusCache;
 import io.crunch.contentcheck.ContentTypeCheckingService;
 import io.crunch.security.VirusScannerService;
 import io.quarkus.scheduler.Scheduled;
@@ -19,7 +19,7 @@ import static io.quarkus.scheduler.Scheduled.ConcurrentExecution.SKIP;
 @ApplicationScoped
 public class PendingMediaFileScheduler {
 
-    private final PendingFileStatusCache pendingMediaFileStatusCache;
+    private final FileStatusCache pendingMediaFileStatusCache;
 
     private final VirusScannerService virusScannerService;
 
@@ -27,7 +27,7 @@ public class PendingMediaFileScheduler {
 
     private final MediaFileTransferService mediaFileTransferService;
 
-    public PendingMediaFileScheduler(PendingFileStatusCache pendingMediaFileStatusCache, VirusScannerService virusScannerService,
+    public PendingMediaFileScheduler(FileStatusCache pendingMediaFileStatusCache, VirusScannerService virusScannerService,
                                      ContentTypeCheckingService contentTypeCheckingService, MediaFileTransferService mediaFileTransferService) {
         this.pendingMediaFileStatusCache = pendingMediaFileStatusCache;
         this.virusScannerService = virusScannerService;

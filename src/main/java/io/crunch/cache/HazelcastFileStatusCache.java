@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Implementation of {@link PendingFileStatusCache} using Hazelcast for distributed caching of pending file statuses.
+ * Implementation of {@link FileStatusCache} using Hazelcast for distributed caching of pending file statuses.
  *
  * <p>This class utilizes Hazelcast's in-memory data grid to efficiently store and manage the statuses of pending files.
  * For a stateless caching solution, consider storing the data in an external database.
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * <p>It uses multicast discovery for the Hazelcast cluster, enabling automatic discovery of other cluster members.
  */
 @ApplicationScoped
-public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
+public class HazelcastFileStatusCache implements FileStatusCache {
 
     public static final String PENDING_MEDIA_FILE_CACHE_NAME = "PENDING_STATUS_CACHE";
 
@@ -27,7 +27,7 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
 
     private final HazelcastInstance hazelcastInstance;
 
-    public HazelcastPendingFileStatusCache(
+    public HazelcastFileStatusCache(
             @ConfigProperty(name = "app.hazelcast.status.cache.size ", defaultValue = "1000") int cacheSize) {
         // It tries to load Hazelcast configuration from a list of well-known locations,
         // and then applies overrides found in environment variables/system properties.
