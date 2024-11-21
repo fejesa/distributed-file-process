@@ -33,12 +33,16 @@ public class ContentTypeCheckingService {
             .forEach(name -> {
                 logger.info("Schedule media file [{}] content type checking", name);
                 try {
-                    Thread.sleep(500); // Simulates a delay of 0.5 second to mimic the scanning process
+                    checkType(name);
                     pendingMediaFiles.mediaTypeCheckingCompleted(new ContentTypeCheckResult(name, true));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
             });
+    }
+
+    private static void checkType(String fileName) throws InterruptedException {
+        Thread.sleep(500); // Simulates a delay of 0.5 second to mimic the scanning process
     }
 }

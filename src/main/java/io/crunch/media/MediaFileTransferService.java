@@ -32,12 +32,16 @@ public class MediaFileTransferService {
             .forEach(name -> {
                 logger.info("Schedule media file [{}] transfer", name);
                 try {
-                    Thread.sleep(2000); // Simulates a delay of 2 second to mimic the transfer process
+                    transfer(name);
                     pendingMediaFiles.transferCompleted(name);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
             });
+    }
+
+    private void transfer(String fileName) throws InterruptedException {
+        Thread.sleep(2000); // Simulates a delay of 2 second to mimic the transfer process
     }
 }
