@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 /**
  * Interface for managing the cache of pending file statuses, including
  * operations for updating, retrieving, and checking cache readiness.
+ * <p>The key of the cache is the name of the pending file, and the value is the status of the file.
  */
 public interface PendingFileStatusCache {
 
@@ -21,15 +22,17 @@ public interface PendingFileStatusCache {
      *
      * @param name the name of the pending file to delete.
      */
-    void delete(long name);
+    void delete(String name);
 
     /**
      * Retrieves a stream of pending file names that match the specified status.
      *
      * @param status the status to filter files by.
      * @return a stream of file names with the specified status.
+     * @apiNote Returns the locally owned set of file names.
+     * The stream may be lazily evaluated and should be consumed in a timely manner.
      */
-    Stream<String> getAwaiting(String status);
+    Stream<String> getByStatus(String status);
 
     /**
      * Checks if the cache instance is active and operational.
