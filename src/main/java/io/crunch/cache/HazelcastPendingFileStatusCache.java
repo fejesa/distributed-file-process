@@ -16,6 +16,7 @@ import java.util.stream.Stream;
  * <p>This class utilizes Hazelcast's in-memory data grid to efficiently store and manage the statuses of pending files.
  * For a stateless caching solution, consider storing the data in an external database.
  * However, in this implementation, the items are stored in memory for simplicity.
+ * <p>It uses multicast discovery for the Hazelcast cluster, enabling automatic discovery of other cluster members.
  */
 @ApplicationScoped
 public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
@@ -34,7 +35,7 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
         // properties programmatically
         var config = Config.load();
         config.setInstanceName(HAZELCAST_INSTANCE_NAME)
-            .setClusterName("uploader-cluster")
+            .setClusterName("hazelcast-crunch-cluster")
             .addMapConfig(new MapConfig()
                 .setEvictionConfig(new EvictionConfig()
                     .setMaxSizePolicy(MaxSizePolicy.PER_NODE)
@@ -44,7 +45,8 @@ public class HazelcastPendingFileStatusCache implements PendingFileStatusCache {
 
         // Use logging bridge to use the right format
         config.setProperty("hazelcast.logging.type", "slf4j");
-        config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+        // Enables multicast discovery for the Hazelcast cluster
+        config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
         this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(config);
     }
 
