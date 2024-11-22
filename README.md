@@ -1,6 +1,6 @@
 # Tasks distribution using Hazelcast
 ## Introduction
-In many scenarios, distributing tasks across multiple nodes is essential for achieving scalability and efficiency. Tools like [Apache Kafka](https://kafka.apache.org/), [Apache Spark](https://spark.apache.org/), [Apache Flink](https://flink.apache.org/), and [Hazelcast](https://hazelcast.com/) are commonly used for such purposes, each offering unique features and advantages tailored to specific use cases.
+In many scenarios, distributing tasks across multiple nodes is essential for achieving scalability and efficiency. Tools like [Kafka](https://kafka.apache.org/), [Spark](https://spark.apache.org/), [Flink](https://flink.apache.org/), and [Hazelcast](https://hazelcast.com/) are commonly used for such purposes, each offering unique features and advantages tailored to specific use cases.
 
 For this project, I chose Hazelcast due to its ease of use and the robust APIs it provides for distributed data structures and computing. Hazelcast's simplicity and flexibility make it an excellent choice for building distributed systems efficiently.
 
@@ -15,20 +15,20 @@ To handle varying workloads, the system must be elastic, scaling up or down dyna
 The virus scan, validation, and file transfer are three distinct tasks that can be distributed across multiple nodes. Each task is sequential and dependent on the successful completion of the previous one. For example, a file must pass the virus scan before it can be validated, and it must pass validation before being transferred to the final storage location.
 
 To manage the process, the following statuses are used:
-* PENDING_VIRUS_SCAN: The task is awaiting a virus scan.
-* PENDING_TYPE_CHECK: The task is awaiting validation.
-* PENDING_TRANSFER: The task is awaiting transfer to the final storage.
-* INFECTED: The file contains a virus and cannot be processed.
-* UNSUPPORTED_FORMAT: The file format is unsupported and cannot be processed.
+* `PENDING_VIRUS_SCAN`: The task is awaiting a virus scan.
+* `PENDING_TYPE_CHECK`: The task is awaiting validation.
+* `PENDING_TRANSFER`: The task is awaiting transfer to the final storage.
+* `INFECTED`: The file contains a virus and cannot be processed.
+* `UNSUPPORTED_FORMAT`: The file format is unsupported and cannot be processed.
 
-When a user uploads a file, the application registers the file in a Hazelcast distributed cache using the file name and sets its status to PENDING_VIRUS_SCAN.
+When a user uploads a file, the application registers the file in a Hazelcast distributed cache using the file name and sets its status to `PENDING_VIRUS_SCAN`.
 The application then distributes the task to a node for virus scanning. Once the scan is complete:
-* If the file passes, the status is updated to PENDING_TYPE_CHECK, and the task is distributed to a node for validation.
-* If the file is infected, the status is updated to INFECTED.
+* If the file passes, the status is updated to `PENDING_TYPE_CHECK`, and the task is distributed to a node for validation.
+* If the file is infected, the status is updated to `INFECTED`.
 
 During validation:
-* If the file is unsupported, the status is updated to UNSUPPORTED_FORMAT.
-* If the file passes, the status is updated to PENDING_TRANSFER, and the task is distributed to a node for transfer.
+* If the file is unsupported, the status is updated to `UNSUPPORTED_FORMAT`.
+* If the file passes, the status is updated to `PENDING_TRANSFER`, and the task is distributed to a node for transfer.
 * If the file passes all stages, it is transferred to the final storage location, and the entry is removed from the distributed cache.
 
 Hazelcast distributed map ensures data redundancy and fault tolerance through replication:
@@ -36,14 +36,16 @@ Hazelcast distributed map ensures data redundancy and fault tolerance through re
 * Only one node acts as the owner of an entry. The owner node manages the entry’s lifecycle, processes updates, and propagates changes to replica nodes.
 
 Tasks are scheduled on each node, querying local entries within the distributed map:
-* Entries are filtered based on their status (e.g., PENDING_VIRUS_SCAN, PENDING_TYPE_CHECK).
+* Entries are filtered based on their status (e.g., `PENDING_VIRUS_SCAN`, `PENDING_TYPE_CHECK`).
 * The corresponding tasks are then processed locally, ensuring efficient utilization of resources and minimizing network overhead.
+
+![Application components](docs/app-components.png)
 
 I use [Quarkus](https://quarkus.io/) to build the application, leveraging its reactive programming model and support for Hazelcast. Quarkus provides a lightweight, fast, and efficient framework for building cloud-native applications, making it an ideal choice for this project.
 
 This approach ensures scalability, fault tolerance, and efficient task distribution, enabling the system to handle high workloads while maintaining data integrity and security.
 
-**Note**: This project is a proof of concept and does not implement the actual virus scanning, validation, or file transfer processes. Instead, it focuses on demonstrating task distribution and management using Hazelcast. The concept can be easily build using [Spring Boot](https://spring.io/projects/spring-boot), [Micronaut](https://micronaut.io/), or other frameworks with support for Hazelcast.
+**Note**: This project is a proof of concept and does not implement the actual virus scanning, validation, or file transfer processes. Instead, it focuses on demonstrating task distribution and management using Hazelcast. The Quarkus can be easily replaced by [Spring Boot](https://spring.io/projects/spring-boot), [Micronaut](https://micronaut.io/), or other frameworks with support for Hazelcast.
 
 Additionally, this project assumes that uploaded files are stored in a shared location accessible to all nodes in the cluster. For a stateless solution, cache data should be stored in an external database to ensure consistency and durability across nodes.
 
