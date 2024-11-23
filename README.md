@@ -35,13 +35,15 @@ Hazelcast distributed map ensures data redundancy and fault tolerance through re
 * Each entry in the distributed map can have multiple replicas stored across different nodes, ensuring that data remains available even if a node fails.
 * Only one node acts as the owner of an entry. The owner node manages the entry’s lifecycle, processes updates, and propagates changes to replica nodes.
 
-Tasks are scheduled on each node, querying local entries within the distributed map:
+Tasks are scheduled on each node, querying **local entries** within the distributed map:
 * Entries are filtered based on their status (e.g., `PENDING_VIRUS_SCAN`, `PENDING_TYPE_CHECK`).
-* The corresponding tasks are then processed locally, ensuring efficient utilization of resources and minimizing network overhead.
+* The corresponding file is then **processed only by one instance**, ensuring efficient utilization of resources and minimizing network overhead.
 
 ![Application components](docs/app-components.png)
 
 I use [Quarkus](https://quarkus.io/) to build the application, leveraging its reactive programming model and support for Hazelcast. Quarkus provides a lightweight, fast, and efficient framework for building cloud-native applications, making it an ideal choice for this project.
+
+I use Hazelcast **embedded mode** to create a cluster of nodes within the same JVM process. The main advantage of embedded mode is that all our Java classes are visible to Hazelcast. This way, you don’t need to add classes to your members for tasks such as entry processing or submitting jobs.
 
 This approach ensures scalability, fault tolerance, and efficient task distribution, enabling the system to handle high workloads while maintaining data integrity and security.
 
@@ -50,7 +52,7 @@ This approach ensures scalability, fault tolerance, and efficient task distribut
 Additionally, this project assumes that uploaded files are stored in a shared location accessible to all nodes in the cluster. For a stateless solution, cache data should be stored in an external database to ensure consistency and durability across nodes.
 
 For practical implementation:
-* Virus scanning: Tools like [ClamAV](https://www.clamav.net/) can be integrated.
+* Virus scanning: Tools like [ClamAV](https://www.clamav.net/) can be integrated. ClamAV can be run within a Docker container and accessed via TCP sockets. Bonus: [Quarkus-Antivirus](https://github.com/quarkiverse/quarkus-antivirus) project can be used for integration.
 * File validation: [Apache Tika](https://tika.apache.org/) can be used for format and metadata analysis.
 * File transfer: Solutions like the [AWS SDK](https://aws.amazon.com/sdk-for-java/) or [Google Cloud Storage SDK](https://developers.google.com/api-client-library/java) can handle file uploads to cloud storage services.
 * Write-through caching: To ensure data consistency, a [write-through cache]((https://hazelcast.com/glossary/cache-access-patterns/#write-through-cache)) can be implemented to synchronize cache updates with an external database.
