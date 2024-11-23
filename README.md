@@ -28,8 +28,9 @@ The application then distributes the task to a node for virus scanning. Once the
 
 During validation:
 * If the file is unsupported, the status is updated to `UNSUPPORTED_FORMAT`.
-* If the file passes, the status is updated to `PENDING_TRANSFER`, and the task is distributed to a node for transfer.
-* If the file passes all stages, it is transferred to the final storage location, and the entry is removed from the distributed cache.
+* If the file passes, the status is updated to `PENDING_TRANSFER`, and the task is distributed to a node for transfer. 
+
+If the file passes all stages, it is transferred to the final storage location, and the entry is removed from the distributed cache.
 
 Hazelcast distributed map ensures data redundancy and fault tolerance through replication:
 * Each entry in the distributed map can have multiple replicas stored across different nodes, ensuring that data remains available even if a node fails.
@@ -56,6 +57,8 @@ For practical implementation:
 * File validation: [Apache Tika](https://tika.apache.org/) can be used for format and metadata analysis.
 * File transfer: Solutions like the [AWS SDK](https://aws.amazon.com/sdk-for-java/) or [Google Cloud Storage SDK](https://developers.google.com/api-client-library/java) can handle file uploads to cloud storage services.
 * Write-through caching: To ensure data consistency, a [write-through cache]((https://hazelcast.com/glossary/cache-access-patterns/#write-through-cache)) can be implemented to synchronize cache updates with an external database.
+
+The application can be deployed on Kubernetes, AWS, Google Cloud, or other cloud platforms to leverage auto-scaling, load balancing, and other cloud-native features. It can also run on-premises or in hybrid environments. For experimentation or fun, you can even deploy it on a [Raspberry Pi](https://www.raspberrypi.com/products/raspberry-pi-5/).
 
 ## Building the project
 ### Prerequisites
